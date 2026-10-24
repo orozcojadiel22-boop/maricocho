@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un regalo para ti</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;font-family:'Segoe UI',sans-serif;overflow:hidden}
+  canvas{position:fixed;inset:0;z-index:0}
+  .tip,.caja,.mensaje{z-index:1}
+  .tip{color:#ffb3cf;font-size:20px;margin-bottom:40px;animation:pulso 1.5s infinite}
+  @keyframes pulso{50%{opacity:.4}}
+  .caja{position:relative;width:180px;height:180px;cursor:pointer}
+  .caja:hover{animation:tiembla .4s infinite}
+  @keyframes tiembla{25%{transform:rotate(3deg)}75%{transform:rotate(-3deg)}}
+  .base{position:absolute;bottom:0;width:180px;height:130px;background:#ff4d8d;border-radius:8px}
+  .tapa{position:absolute;top:20px;left:-10px;width:200px;height:45px;background:#e91e63;border-radius:8px;transition:transform .8s ease,opacity .8s;z-index:2}
+  .cinta-v{position:absolute;left:78px;width:24px;height:100%;background:#fff3a0}
+  .lazo{position:absolute;top:-30px;left:70px;font-size:45px}
+  .abierta .tapa{transform:translateY(-160px) rotate(-25deg);opacity:0}
+  .abierta{animation:none!important}
+  .abierta .base{transition:opacity 1s .6s;opacity:0}
+  .mensaje{position:absolute;font-size:clamp(48px,12vw,120px);font-weight:bold;color:#fff;text-shadow:0 0 25px #ff4d8d,0 0 50px #ff4d8d;opacity:0;transform:scale(.2);transition:all 1.2s ease .5s}
+  .mensaje.ver{opacity:1;transform:scale(1)}
+</style>
+</head>
+<body>
+  <canvas id="cielo"></canvas>
+  <p class="tip" id="tip">Toca tu regalo 🎁</p>
+  <div class="caja" id="caja">
+    <div class="tapa"><div class="cinta-v"></div><div class="lazo">🎀</div></div>
+    <div class="base"><div class="cinta-v"></div></div>
+  </div>
+  <div class="mensaje" id="msg">Maricocho</div>
+<script>
+  const cv=document.getElementById('cielo'),ctx=cv.getContext('2d');
+  let estrellas=[];
+  function tam(){cv.width=innerWidth;cv.height=innerHeight;
+    estrellas=Array.from({length:300},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.6+.3,f:Math.random()*6}));}
+  tam();addEventListener('resize',tam);
+  function dibuja(t){ctx.clearRect(0,0,cv.width,cv.height);
+    for(const e of estrellas){ctx.globalAlpha=.4+.6*Math.abs(Math.sin(t/900+e.f));
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,Math.PI*2);ctx.fill();}
+    requestAnimationFrame(dibuja);}
+  requestAnimationFrame(dibuja);
+  const caja=document.getElementById('caja');
+  caja.addEventListener('click',()=>{
+    caja.classList.add('abierta');
+    document.getElementById('tip').style.visibility='hidden';
+    document.getElementById('msg').classList.add('ver');
+  },{once:true});
+</script>
+</body>
+</html>
